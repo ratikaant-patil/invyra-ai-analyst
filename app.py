@@ -8,7 +8,7 @@ from rag_core import get_rag_chain, set_llm_model
 from vector_db import get_retrievers, CSV_DB_LOCATION, PDF_DB_LOCATION
 
 # --- Streamlit App Configuration ---
-st.set_page_config(page_title="Pizza Restaurant Q&A", layout="centered")
+st.set_page_config(page_title="Business Anylatics", layout="centered")
 st.title("RAG Chatbot")
 st.markdown("""
 Ask questions! You can choose to retrieve information from:
