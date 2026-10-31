@@ -1,44 +1,38 @@
+"""Invyra in the terminal. Run with: python main.py"""
+from langchain_ollama import OllamaEmbeddings
 from langchain_ollama.llms import OllamaLLM
-from langchain_core.prompts import ChatPromptTemplate 
 
-# Import both retrievers from vector.py
-from vector import csv_retriever, pdf_retriever
+from rag_core import answer_from_documents, answer_with_local_model, set_llm_model
+from vector_db import get_retrievers
 
-# Initialize the Ollama LLM with the specified model
-model = OllamaLLM(model = "llama3.2")
+LLM_MODEL = "qwen3:8b"
+EMBED_MODEL = "mxbai-embed-large"
 
-# Define the prompt template for the chatbot
-template = """
-You are an expert in answering questions about a pizza restaurant
+llm = OllamaLLM(model=LLM_MODEL, num_ctx=8192, temperature=0.2)
+set_llm_model(llm)
 
-Here are some relevant reviews: {reviews}
+print("Invyra is reading your business files...")
+csv_retriever, pdf_retriever, stats = get_retrievers(OllamaEmbeddings(model=EMBED_MODEL))
+print(f"Ready: {stats['csv']:,} data records, {stats['pdf']:,} document passages.\n")
 
-Here is the question to answer: {question}
-"""
-# Create a ChatPromptTemplate object from the template string
-prompt = ChatPromptTemplate.from_template(template)
+print("Choose a source:")
+print("1. Business Data (CSV)")
+print("2. Business Documents (PDF)")
+retriever = pdf_retriever if input("Enter 1 or 2: ").strip() == "2" else csv_retriever
 
-# Create a chain that connects the prompt to the model
-chain =  prompt | model
-
-# Ask user which source to use
-print("Choose data source for retrieval:")
-print("1. CSV reviews")
-print("2. PDF reviews")
-source_choice = input("Enter 1 or 2: ").strip()
-if source_choice == "2":
-    retriever = pdf_retriever
-else:
-    retriever = csv_retriever
-
-# Start an interactive loop to accept user questions
 while True:
-    print("\n\n-----------------------------New prompt-----------------------------")
-    question = input("Please enter your question (q to quit): ")
-    print("\n")
-    if question == "q":
-        break  # Exit the loop if the user enters 'q'
-    reviews = retriever.invoke(question)  # Retrieve relevant reviews
-    result = chain.invoke({"reviews": reviews, "question": question})
-    print(result)  # Print the result from the chain
-    print("\n\n")
+    print("\n----------------------------- New question -----------------------------")
+    question = input("Ask Invyra (q to quit): ").strip()
+    if question.lower() == "q":
+        break
+    if not question:
+        continue
+
+    result = answer_from_documents(question, retriever)
+    if result["found"]:
+        print("\n" + result["answer"])
+        if result["sources"]:
+            print("\nFrom: " + "; ".join(result["sources"]))
+    else:
+        print(f"\n(Not found in your business files. Answering with local model {LLM_MODEL}.)\n")
+        print(answer_with_local_model(question))

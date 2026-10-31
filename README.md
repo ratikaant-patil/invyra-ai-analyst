@@ -34,6 +34,8 @@ This is a local chatbot application that lets you ask questions about your own C
 2. Pull the required models:
    ```sh
    ollama pull llama3
+   OR
+   ollama pull qwen3:8b
    ollama pull mxbai-embed-large
    ```
 
