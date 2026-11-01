@@ -18,7 +18,7 @@ CSV_FOLDER = "local_csv"
 PDF_FOLDER = "local_pdf"
 
 # Storage. These are new locations on purpose: your old databases were built with
-# whole-page PDFs and a pizza-review CSV layout, so Invyra re-indexes everything once.
+# whole-page PDFs and a business CSV layout, so Invyra re-indexes everything once.
 # You can delete the old chroma_csv_db / chroma_pdf_db folders and *_files_record.json files.
 DB_ROOT = "./invyra_db"
 CSV_DB_LOCATION = f"{DB_ROOT}/csv"
