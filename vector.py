@@ -72,7 +72,7 @@ def load_pdf_documents(pdf_folder, processed_files):
     return documents, ids, processed_files
 
 # This Is Modified Code
-
+# This also
 # Embedding model
 embeddings = OllamaEmbeddings(model="mxbai-embed-large")
 
