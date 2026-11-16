@@ -437,6 +437,8 @@ if not st.session_state.messages:
 # ---------------------------------------------------------------------------
 # Chat
 # ---------------------------------------------------------------------------
+#Logic 
+
 for message in st.session_state.messages:
     render_message(message)
 
