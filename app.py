@@ -330,7 +330,6 @@ with st.sidebar:
         st.session_state.pending_prompt = None
         st.rerun()
 
-# New Line
 # ---------------------------------------------------------------------------
 # Hero (until the first question)
 # ---------------------------------------------------------------------------
